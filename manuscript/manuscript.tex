@@ -1,0 +1,110 @@
+\documentclass[aps,prl,twocolumn,10pt,notitlepage]{revtex4-1}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathrsfs,bm,bbold,color,hyperref,graphicx,times}
+
+\begin{document}
+
+\title{Random Transverse Field Ising Model}
+
+\author{Arash Bellafard}
+% \author{Sudip Chakravarty}
+\affiliation{Department of Physics and Astronomy, University of California, Los Angeles, CA 90095, USA}
+\affiliation{Department of Neurology, David Geffen School of Medicine, University of California, Los Angeles, CA 90095, USA}
+
+\date{\today}
+
+\maketitle
+
+We investigate the behavior of the random transverse field Ising model (RTFIM) by performing Monte-Carlo simulation. We choose the dimension of the system to be one ($d = 1$) for which the quantum fluctuations are enhanced. Because there is no frustration in our system, we are able to use highly efficient cluster algorithms which substantially reduces the critical slowing down. 
+
+% We calculate the correlation function at and away from the critical point. We show that the system exhibits a non-trivial \emph{activated} dynamical scaling~\cite{fisherPRL1992,fisherPRB1995} which is manifested through the exponential relation between characteristic time and length scales $\xi_\tau \sim \exp(\text{const} \times \xi^\psi)$ where $\psi = ???$.  We show Griffiths singularities ...\\
+
+% We try to get more insight into random quantum critical point.\\
+
+% We further investigate the behavior of induced criticality as the disorder strength changes.
+
+The Hamiltonian of the random transverse field Ising model is given by
+\begin{equation}\label{eq:hamiltonian}
+	H = - \sum_{i = 1}^{L} J_{i} \sigma_{\alpha,i}^{z} \sigma_{\alpha,i+1}^{z} - \sum_{i = 1}^{L} h_{i} \sigma_{\alpha,i}^{x}
+\end{equation}
+where $L$ is the length of the lattice, Latin sub-indices denote the lattice sites, and $\sigma$'s are the Pauli operators. The $J_{i}$ and $h_{i}$ are the random nearest-neighbor coupling constants and the random transverse fields, respectively. The random coupling constants and transverse fields are taken from a distribution restricted to only positive values. 
+
+To study the Hamiltonian in Eq.~\eqref{eq:hamiltonian}, we propose an effective classical action in $d+1$ dimensions, where the extra imaginary time dimension is of size $\beta \equiv 1/T$ and is divided up into $L_\tau \equiv \beta/\Delta \tau$ intervals each of width $\Delta \tau$ in the limit $\Delta \tau \to 0$. We introduce disorder only in the horizontal direction. The vertical bonds are pure and the horizontal bonds are the same within each column. This emulates a quenched disordered quantum system whose disorder is known to be perfectly correlated in the imaginary time direction. This is the McCoy-Wu random Ising model~\cite{mccoyPR1968I,mccoyPR1969II,mccoyPR1969III,shankarPRB1987} which is shown to be equivalent to the random transverse field quantum spin-$\frac{1}{2}$ Ising model in the large imaginary time limit.
+The partition function is then
+\begin{equation}
+	Z = \lim_{\Delta \tau \to 0} \mathrm{Tr}~e^{-\mathcal{S}}
+\end{equation}
+with the effective classical action given by
+\begin{equation}\label{eq:action}
+% \begin{aligned}
+	\mathcal{S}_{\text MW} =
+	-\sum_{\tau,i} J_{i} S_{i}(\tau) S_{i+1}(\tau)
+	-\sum_{\tau,i} J S_{i}(\tau) S_{i}(\tau+1)
+% \end{aligned}
+\end{equation}
+where the $S_i(\tau) = \pm 1$ are classical Ising spins, the indices $\alpha$ and $\beta$ denote the color, the index $i$ runs over the sites of the original $d$-dimensional lattice, and $\tau = 1, 2, \dots, L_\tau$ denotes a time slice. Note that we have the same random interaction in each slice. For computational convenience, we set $\Delta \tau = 1$ and equivalently take the limit $L_\tau \to \infty$ implying $T \to 0$. The coupling $J$ which sets the relative strength of the transverse field in Eq.~\eqref{eq:hamiltonian}, is like an inverse ``temperature'' for the effective classical model in Eq.~\eqref{eq:action}. The spin-spin coupling, $J_i$, is independent of $\tau$, because it is a quenched random variable. Because the effect of disorder in a $d = 1$ dimensional quantum system is already more enhanced than any higher dimensional system, even a relatively strong disorder distribution should suffice to capture their effect on a quantum system. We independently take the couplings $J_i$ from the following rectangular distributions
+\begin{equation}\label{eq:disorderDistribution}
+	\pi(J_i) = 
+	\begin{cases}
+		1, &\text{ if }\quad J-\frac{\Delta_J}{2} < J_i < J+\frac{\Delta_J}{2}\\
+		0, &\text{ otherwise}
+	\end{cases}
+\end{equation}
+Thus, the random couplings $J_i$ have the mean value $J$ and the width $\Delta_J$. We use $J$ as tuning parameter in our simulation.
+
+
+We have studied the model~\eqref{eq:action} in $d = 1$ dimension by Monte Carlo simulations on a square lattice of size $L \times L_\tau$ using a periodic boundary conditions. We have estimated the equilibration ``time'' using the logarithmic binning method i.e. we have compared the average values of each observable over $2^n$ Monte Carlo steps and made sure that the last three averages were within each others error bars. Each observable has been obtained by averaging over $10,000$ disordered configurations and for each disordered configuration, $10,000$ thermal averages has been conducted. The error bars have been calculated using the Jacknife procedure~\cite{wuAOS1986,young2015everything,youngARX2012}.
+
+The model in Eq.~\eqref{eq:hamiltonian} is known to exhibit unusual behavior associated with infinite randomness fixed point and is described by strongly disordered critical points \cite{fisherPRB1994,fisherPRB1995}. This system undergoes a phase transition at zero temperature from a phase with infinite susceptibility and continuously varying exponents to a ferromagnetic phase via a quantum critical point characterized by scaling with energy $E$ and length scales $L$ related by $\ln E \sim L^\psi$. 
+
+The critical point of the classical McCoy-Wu model is well known~\cite{mccoyPR1968I,mccoyPR1969II,mccoyPR1969III} and it is given by
+\begin{equation}\label{eq:criticalPoint}
+	2J + \int_0^\infty dJ' P(J') \ln(\tanh(J')) = 0.
+\end{equation}
+For the rectangular distribution given in Eq.~\ref{eq:disorderDistribution} with $\Delta J = 0.2$, the critical point, according to Eq.~\eqref{eq:criticalPoint}, is $J_c = 0.450341$. 
+
+Now we try to calculate the critical point using our algorithm. We calculate the magnetic Binder cumulant~\cite{binderPRB1984,binderPRB1986}
+\begin{equation}
+	V_m = 1 - \frac{[\langle m^4 \rangle]}{3[\langle m^2 \rangle^2]}
+\end{equation}
+where
+\begin{equation}
+	m = \frac{1}{L L_\tau} \sum_{\tau,i} S_{i}(\tau).
+\end{equation}
+The square and angular brackets, $[\cdots]$ and $\langle \cdots \rangle$, denote the disordered and temporal averages, respectively. In the disordered phase, the probability distribution of the magnetization, $P(m)$, becomes a Gaussian and $V_m \to 0$ as $L \to \infty$. In the ordered phase, $P(m)$ becomes a $\delta$-function and $V_m \to 2/3$ as $L \to \infty$. In the paramagnetic phase, for small $L_\tau$, the system is effectively classical and at a finite temperature, therefore $V_m \to 0$. For $L_\tau \to \infty$, the system is quasi one dimensional in the imaginary time direction, therefore $V_m \to 0$ also. There exists an intermediate point where the $V_m$ acquires a maximum value $V_m^\text{max}$. This maximum value decreases as $L$ increases if the system is in the paramagnetic phase, whereas it increases as $L$ increases if the system is in the ferromagnetic phase. So, there is an intermediate point at which the $V_m^\text{max}$ is a constant for all $L$ which is the quantum critical point. For our model with $\Delta_J = 0.20$ we estimate the quantum critical point $J_c = 0.445 \pm 0.005$.
+
+% \subsection{MW model equal-time correlation of spins $L/2$ apart at the critical point}
+
+% The distributions of the equal-time correlation function, $C_{\alpha,i}(r) = \langle \sigma_{\alpha,i}^z \sigma_{\alpha,i+r}^z \rangle$, are very broad (see Fig.~\ref{fig:mwCorDistRect}). As a result, the \emph{average} and \emph{typical} correlations behave differently, because the average is dominated by a few rare points. We have calculated the average and typical correlation function of spins $L/2$ apart at the critical point for the McCoy-Wu model~\eqref{eq:mwaction}. We have defined the typical correlation function as the exponential of the average of the logarithm~\cite{kiskerPRB1998}. In Fig.~\ref{fig:mwCorRect}, we show that the average correlation function falls off as a power law whereas the typical correlation has a downward curvature and falls off faster than the average value. Our result is compatible with the existence of a stretched exponential decay, $\exp(-\text{const}\times L^\sigma)$, at the critical point.
+
+% \begin{figure}[tb]
+% 	\begin{center}
+% 		\includegraphics[width=0.5\textwidth]{mwdist}
+% 	\end{center}
+% 	\caption{(Color online) A plot of the cumulative distribution of the logarithm of the equal-time correlation of spins $L/2$ apart in McCoy-Wu model~\eqref{eq:mwaction} at the critical point $J_c = 0.447746$ with $\Delta_J = 0.2$. One sees that the distribution gets broader and broader as $L$ increases.}
+% 	\label{fig:mwdist}
+% \end{figure}
+
+
+% \begin{figure}[tb]
+% 	\includegraphics[width=0.5\textwidth]{mwCorRect}
+% 	\caption{(Color online) Average and typical correlations between spins $L/2$ apart at the critical point. The average falls off with a power law. The curvature of the data for the typical correlation function shows that this falls off faster than a power law.}
+% 	\label{fig:mwCorRect}
+% \end{figure}
+
+% \subsection{MW model linear susceptibility probability distribution}
+
+
+% We now turn our attention to the three color Ashkin-Teller action in Eq.~\ref{eq:action}. Contrary to the McCoy-Wu model, we don't know where the critical point of the disordered quantum three color Ashkin-Teller model is. To find the quantum critical point, we do the following~\cite{riegerPRL1994}: We calculate the magnetic Binder cumulant~\cite{binderPRB1984,binderPRB1986}
+% \begin{equation}
+% 	V_m = 1 - \frac{[\langle m^4 \rangle]}{3[\langle m^2 \rangle^2]}
+% \end{equation}
+% where
+% \begin{equation}
+% 	m = \frac{1}{L_\tau L} \left[ \langle \sum_\alpha |m_\alpha| \rangle \right]
+% \end{equation}
+% with $m_\alpha = \sum_{\tau,i} S_{\alpha,i}(\tau)$. The square and angular brackets, $[\cdots]$ and $\langle \cdots \rangle$, denote the disordered and temporal averages, respectively. In the disordered phase, the probability distribution of the magnetization, $P(m)$, becomes a Gaussian and $V_m \to 0$ as $L \to \infty$. In the ordered phase, $P(m)$ becomes a $\delta$-function and $V_m \to 2/3$ as $L \to \infty$. In the paramagnetic phase, for small $\tau$, the system is effectively classical and at a finite temperature, therefore $V_m \to 0$. For $\tau \to \infty$, the system is quasi one dimensional in the imaginary time direction, therefore $V_m \to 0$ also. There exists an intermediate point where the $V_m$ acquires a maximum value $V_m^\text{max}$. This maximum value decreases as $L$ increases if the system is in the paramagnetic phase, whereas it increases as $L$ increases if the system is in the ferromagnetic phase. So, there is an intermediate point at which the $V_m^\text{max}$ is a constant for all $L$ which is the quantum critical point. For our effective model with parameters $(K, \Delta_K, \Delta_J) = (0.10, 0.05, 0.20)$ we estimate the quantum critical point $J_c = 0.231 \pm 0.001$.
+
+
+\bibliography{references}
+
+\end{document}

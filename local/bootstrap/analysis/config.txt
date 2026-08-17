@@ -1,0 +1,32 @@
+[dataset_vm]
+filename: data/vmL(?P<L>\d+).norm
+columns: seed J vm2 vm4
+
+[extract_vm]
+source: dataset_vm
+store: L=INT J vm2 vm4
+
+[bootstrap_vm]
+source: extract_vm
+grouping: L J
+resample: vm2 vm4
+calculate: vm_cumulant=1-vm4/3/vm2**2
+store: L=INT J vm2 vm4 vm_cumulant
+samples: 500
+
+[plot_vm]
+source: bootstrap_vm
+labels: L=INT
+xdata: J
+ydata: vm_cumulant
+
+[fsscale_vm] 
+source: bootstrap_vm
+grouping:
+labels: L=INT
+xdata: J L
+ydata: vm_cumulant
+params: Jc nu
+order: 3
+variable: (J-Jc)*L**(1/nu)
+where: J>=0.2317 and J<=0.2337
